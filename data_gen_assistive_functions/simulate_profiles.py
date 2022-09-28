@@ -1,11 +1,9 @@
-import math
-import seaborn as sns
+import math, os, pvlib
 import numpy as np
 import pandas as pd
-import pvlib
-import pvlib
-import pandas as pd
 import matplotlib.pyplot as plt
+
+PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 #Setting the geographical characteristics of the location
 latitude=46.520
@@ -33,7 +31,8 @@ def generate_power_data(latitude, longitude, altitude, tilt, azimuth, years):
     '''
 
     #Reading the data file: DOWNLOAD DATA FROM PVGIS USING TILT=0 i.e. DATA OF IRRADIANCE ON NORMAL PLANE
-    data = pd.read_csv('raw_input/Timeseries_46.520_6.632_SA2_0deg_0deg_2005_2020.csv',skiprows=8, skipfooter=12, sep ='\,') #data file
+    data = pd.read_csv(PROJECT_DIR+'/raw_input/Timeseries_46.520_6.632_SA2_0deg_0deg_2005_2020.csv',
+                       skiprows=8, skipfooter=12, sep ='\,') #data file
     del data['Int']
     data['time'] = pd.to_datetime(data['time'], format='%Y%m%d:%H%M')
     data.set_index('time', inplace=True)
