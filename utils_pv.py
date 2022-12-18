@@ -221,4 +221,62 @@ def visualize_pv_train_valid(env_dict, scenario_name, client_num, model, figsize
         # plot train data
 
         # plot validation data
+        
+        
+        
+        
+def normalize_data_tup(data):
+    # for one client only
+    data_nrm=(None, None, None, None)
+    # statistics on train data
+    x_mean, y_mean = np.mean(data[0], axis=0), np.mean(data[1], axis=0)
+    x_std, y_std = np.std(data[0], axis=0) + 1e-8, np.std(data[1], axis=0) + 1e-8
+    # normalize
+    data_nrm = ((data[0] - x_mean[None, :]) / x_std[None, :],
+                (data[1] - y_mean[None, :]) / y_std[None, :],
+                (data[2] - x_mean[None, :]) / x_std[None, :],
+                (data[3] - y_mean[None, :]) / y_std[None, :])
+    # check sizes
+    assert data_nrm[0].shape == data[0].shape
+    assert data_nrm[1].shape == data[1].shape
+    assert data_nrm[2].shape == data[2].shape
+    assert data_nrm[3].shape == data[3].shape
+
+    return data_nrm, y_mean, y_std
+
+
+
+
+
+def tile_in_list(a, l):
+    '''
+    a: values
+    l: list of length of the output list
+    if a is a list and l is a list, repeats a_i for l_i times.
+    if a is a single value, repeats a for sum(l) times
+    '''
+    # convert all to list
+    if not isinstance(a,list):
+        a=[a]
+    if not isinstance(l,list):
+        l=[l]
+    # total length of the result
+    len_tot = sum(l)
+
+    # if a is already the correct length, return it
+    if len(a)==len_tot:
+        return a
+    # if a is a single element, repeat it
+    if len(a)==1:
+        return [a[0]]*len_tot
+    # repeat a_i for l_i times
+    if len(a)==len(l):
+        res=[]
+        for ai, li in zip(a, l):
+            res += [ai]*li
+        return res
+    else:
+        print('[ERROR]: should pass a single value, list of values to be tiled, or a full list')
+        return []
+
 
