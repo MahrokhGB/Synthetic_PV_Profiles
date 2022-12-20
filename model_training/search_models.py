@@ -160,7 +160,7 @@ class RidgeWrapper(Ridge):
         self.intercept_ = best_model.intercept_
         self.n_features_in_ = best_model.n_features_in_
         if best_alpha > 0:
-            self._normalize = best_model._normalize
+            #self._normalize = best_model._normalize
             self.n_iter_ = best_model.n_iter_
         if best_alpha == 0:
             self.rank_ = best_model.rank_
