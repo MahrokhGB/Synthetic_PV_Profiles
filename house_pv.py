@@ -360,6 +360,13 @@ def _augment_lags(data, lags, step_ahead=1):
     data_power_reg = copy.deepcopy(data)
     n_rows = data_power_reg.target.size
 
+    # remove lags that already exist
+    dup_ind=[]
+    for lag_ind, lag in enumerate(lags):
+        if 'lag '+str(lag) in data_power_reg.columns:
+            dup_ind.append(lag_ind)
+    lags = np.delete(lags, dup_ind)
+
     data_power_reg = data_power_reg.iloc[max_lag:n_rows-step_ahead+1,:]
     del data_power_reg['target']
     targets = data['target'].values.tolist()[max_lag+step_ahead-1:n_rows]
@@ -370,7 +377,7 @@ def _augment_lags(data, lags, step_ahead=1):
     new_cols = np.zeros((len(targets), len(lags)))
     for lag_num, lag in enumerate(lags):
         new_col_name = 'lag ' + str(lag)
-        if not new_col_name in data.columns:
+        if not new_col_name in data_power_reg.columns:
             new_col_names.append(new_col_name)
             new_cols[:, lag_num] = data['target'].iloc[max_lag-lag:n_rows-lag-step_ahead+1].to_numpy().flatten()
         #data_power_reg[col_name] = data['target'].iloc[max_lag-lag:n_rows-lag-step_ahead+1]
