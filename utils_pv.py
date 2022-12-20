@@ -254,3 +254,51 @@ def tile_in_list(a, l):
     else:
         print('[ERROR]: should pass a single value, list of values to be tiled, or a full list')
         return []
+
+
+
+def visualize_ts(client_ts, pred_mean=None, pred_std=None, title=None,
+                 selected_months=None, hours = None, figsize=(16, 6)):
+
+    '''
+    visulaize predictions for one client
+    '''
+    # check predictions provided for all clients
+    #if (pred_mean is not None) or (pred_std is not None):
+    #    assert (pred_mean is not None) and (pred_std is not None)
+    #    assert len(pred_mean) == len(pred_std)
+
+    fig, ax = plt.subplots(1,1, figsize=figsize)
+
+    if selected_months is not None:
+        client_ts = client_ts.loc[client_ts['month'].isin(selected_months), :]
+    client_ts = client_ts.reset_index()
+    ax.plot(list(client_ts.p_mp), c='b', lw=1, label='true')
+    # TODO label with hours
+    ax.set_xlabel('time (h)')
+    ax.set_xlabel('generated power (kWh/h)')
+    if not title is None:
+        ax.set_title(title)
+    # plot predictions
+    if pred_mean is not None and hours is not None:
+        # get indexes of the ts that correspond to predicted steps
+        ind = client_ts[client_ts['hour_day'].isin(hours)].index.tolist()
+        ind = ind[0:pred_mean.shape[0]] # TODO: this is a bug in test_ts. ind and pred means must be the same size
+        #ind = [i-1 for i in ind]
+        ax.scatter(ind, pred_mean, color='r', s=5, label='prediction')
+        if pred_std is not None:
+            lb = list(client_ts.p_mp)
+            ub = list(client_ts.p_mp)
+            for i in np.arange(len(ind)):
+                lb[ind[i]] = pred_mean[i] - 1.645 * pred_std[i]
+                ub[ind[i]] = pred_mean[i] + 1.645 * pred_std[i]
+            ax.fill_between(np.arange(len(lb)), lb, ub, label = 'confidence', color='red',
+             alpha=0.5)
+
+    '''
+    USAGE EXAMPLE
+    for client_num in np.arange(num_clients):
+        title = 'Predictions on training data for client {:2.0f}'.format(client_num)
+        _, predictions = clients_train_data[client_num] # assume an ideal model with zero error, in practice, this must be the output of your model on clients_train_data[client_num][0]
+        visualize_ts(clients_ts=clients_train_ts[client_num], pred_mean=predictions, selected_months=months, hours=hours, title = title)
+    '''
