@@ -222,3 +222,35 @@ def visualize_pv_train_valid(env_dict, scenario_name, client_num, model, figsize
 
         # plot validation data
 
+
+
+def tile_in_list(a, l):
+    '''
+    a: values
+    l: list of length of the output list
+    if a is a list and l is a list, repeats a_i for l_i times.
+    if a is a single value, repeats a for sum(l) times
+    '''
+    # convert all to list
+    if not isinstance(a,list):
+        a=[a]
+    if not isinstance(l,list):
+        l=[l]
+    # total length of the result
+    len_tot = sum(l)
+
+    # if a is already the correct length, return it
+    if len(a)==len_tot:
+        return a
+    # if a is a single element, repeat it
+    if len(a)==1:
+        return [a[0]]*len_tot
+    # repeat a_i for l_i times
+    if len(a)==len(l):
+        res=[]
+        for ai, li in zip(a, l):
+            res += [ai]*li
+        return res
+    else:
+        print('[ERROR]: should pass a single value, list of values to be tiled, or a full list')
+        return []

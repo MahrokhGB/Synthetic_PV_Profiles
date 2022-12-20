@@ -4,10 +4,9 @@ import os, sys, pickle
 PV_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(PV_DIR)
 sys.path.append(os.path.dirname(PV_DIR))
-sys.path.append(os.path.dirname(os.path.dirname(PV_DIR)))
 
 from Synthetic_PV_Profiles import HousePV, WeatherStation
-from utils.assistive_functions import tile_in_list
+from utils_pv import tile_in_list
 from utils_pv import find_module_family, find_inverter_family, get_city_info
 #from assistive_functions.utils import*
 

@@ -5,10 +5,9 @@ import os, sys, pickle
 PV_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(PV_DIR)
 sys.path.append(os.path.dirname(PV_DIR))
-sys.path.append(os.path.dirname(os.path.dirname(PV_DIR)))
 
 from Synthetic_PV_Profiles import CityPV_UniModal
-from utils.assistive_functions import tile_in_list
+from utils_pv import tile_in_list
 
 #from assistive_functions.utils import*
 
