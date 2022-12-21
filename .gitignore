@@ -2,3 +2,8 @@
 *.pyc
 saved_results/PV_UniModal_env
 saved_results/PV_UniModal_env_raw
+.DS_Store
+samples/.DS_Store
+saved_results/PV_UniModal_nicolas_env_raw
+samples/.DS_Store
+.DS_Store

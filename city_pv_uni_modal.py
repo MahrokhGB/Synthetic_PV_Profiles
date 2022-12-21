@@ -80,25 +80,15 @@ class CityPV_UniModal():
         '''
         # load auto-regressors saved after pre-processing
         if lags is None:
-            file = open(os.path.join(PV_DIR, 'saved_results', 'Lags_FS.pkl'), "rb")
-            self.lags = pickle.load(file)['best_num_adjr2']
-            file.close()
-        else:
-            self.lags=lags
+            lags=[]
+        self.lags=lags
         # load saved setup from pre-processing
         if hours is None:
-            file = open(os.path.join(PV_DIR, 'saved_results', 'hours.pkl'), "rb")
-            self.hours = pickle.load(file)
-            file.close()
-        else:
-            self.hours = hours      # NOTE: feature engineering done for the saved hours
+            hours=np.arange(24)
+        self.hours = hours
         if months is None:
-            file = open(os.path.join(PV_DIR, 'saved_results', 'months.pkl'), "rb")
-            self.months = pickle.load(file)
-            file.close()
-        else:
-            self.months = months    # NOTE: feature engineering done for the saved months
-
+            months = np.arange(1,13)
+        self.months = months
 
         # initialize clients configuration
         self.houses = [None]*num_clients

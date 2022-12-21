@@ -197,10 +197,9 @@ def tune_pacf(house, max_num_lags, max_num_days, step_ahead=1, repeats=1, verbos
     powers = house.data_power.loc[:, 'target'].values
     #powers = house.data_power.loc[house.data_power['month'].isin(house.months), 'target'].values
     pacf_val = sttools.pacf(powers, nlags=max_num_days*24)
+    pacf_val = np.abs(pacf_val)             # compute abs
     sorted_lags = np.argsort(-pacf_val)[1:] # remove first lag which is 0
-    if verbose:
-        print('[INFO] sorted lags before removing constant lags during training: ', *sorted_lags)
-    # BUG! A NEGATIVE LARGE PACF SHOWS AN IMPORTANT FEATURE
+
     # build regression df with all lags
     house.data_power = _augment_lags(
                             house.data_power, lags=sorted_lags,
@@ -241,9 +240,6 @@ def tune_pacf(house, max_num_lags, max_num_days, step_ahead=1, repeats=1, verbos
         # remove from data
         X_train = np.delete(X_train, const_feat_inds, axis=1)
         assert len(house.feature_names) == X_train.shape[1]
-        if verbose:
-            print('[INFO] sorted lags after removing constant lags during training: ', *sorted_lags)
-    print(sorted_lags)
 
     # init
     r2_adj_train = [[0]*(max_num_lags+1)]*repeats
