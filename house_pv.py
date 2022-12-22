@@ -256,7 +256,7 @@ class HousePV():
                           'time',       # # reflects in hour_day_x, hour_day_y
                           'hour_day',   # transformed to hour_day_x, hour_day_y
                           'is_valid', 'is_train', 'year']
-        self.feature_names = [col for col in self.data_power if not col in cols_to_remove]
+        self.feature_names = [col for col in self.data_power.columns if not col in cols_to_remove]
 
 
 
@@ -419,7 +419,7 @@ def reconstruct_house(env_dict, client_num, scenario_name):
 if __name__ == "__main__":
     PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     sys.path.append(PROJECT_DIR)
-    from Synthetic_PV_Profiles import WeatherStation
+    from weather_station import WeatherStation
 
     #Reading the data file: DOWNLOAD DATA FROM PVGIS USING TILT=0 i.e. DATA OF IRRADIANCE ON NORMAL PLANE
     city_name = 'Lausanne'

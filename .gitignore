@@ -7,3 +7,6 @@ samples/.DS_Store
 saved_results/PV_UniModal_nicolas_env_raw
 samples/.DS_Store
 .DS_Store
+saved_results/PV_UniModal_env_raw_cmpr
+saved_results/PV_UniModal_env_raw_test.pkl
+.gitignore

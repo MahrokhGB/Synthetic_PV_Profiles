@@ -5,7 +5,8 @@ PV_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(PV_DIR)
 sys.path.append(os.path.dirname(PV_DIR))
 
-from Synthetic_PV_Profiles import HousePV, WeatherStation
+from house_pv import HousePV
+from weather_station import WeatherStation
 from utils_pv import tile_in_list
 from utils_pv import find_module_family, find_inverter_family, get_city_info
 #from assistive_functions.utils import*
@@ -197,8 +198,6 @@ class CityPV_UniModal():
                 if (col_std<=1e-4*col_mean+1e-6) and (not col_num in const_cols):
                     const_cols.append(col_num)
                     const_feats.append(self.feature_names[col_num])
-                    print(self.feature_names[col_num] + ' with feat num {:2.0f} was constant for client {:2.0f}'.format(col_num, client_num))
-                    print(x_train[0:20, col_num])
         # remove constant cols from data
         if len(const_cols)==0:
             return

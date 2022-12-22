@@ -118,7 +118,6 @@ class PVDataset(MetaDataset):
         self.env_dict['months'] = self.task_environment.months
         self.env_dict['hours'] = self.task_environment.hours
         self.env_dict['lags'] = self.task_environment.lags
-
         # new properties
         self.env_dict['clients_config']=self.task_environment.clients_config
 
@@ -132,6 +131,7 @@ class PVDataset(MetaDataset):
                             remove_constant_cols=self.env_dict['remove_constant_cols'])
             self.env_dict['train_scenarios'][scenario_name]['clients_data'] = copy.deepcopy(self.task_environment.clients_data_tuple)
             self.env_dict['train_scenarios'][scenario_name]['time_series'] = copy.deepcopy(self.task_environment.clients_time_series)
+
             if self.env_dict['feature_names'] is None:
                 self.env_dict['feature_names'] = self.task_environment.feature_names
             else:
@@ -183,6 +183,7 @@ def remove_feature(env_dict, feature_name, in_place=False):
             env_dict['train_scenarios'][scenario]['clients_data'][client_num] = (x_train, y_train, x_valid, y_valid)
             assert x_train.shape[1] == len(env_dict['feature_names'])
             assert x_valid.shape[1] == len(env_dict['feature_names'])
+
     if in_place:
         return
     else:
@@ -336,8 +337,3 @@ if __name__ == "__main__":
     print('[INFO] generating data for {:2.0f} clients'.format(num_clients))
     clients_data, clients_train_ts, clients_test_ts = task_environment.generate_clients_data(num_clients=num_clients,
                                                           weight_modes=weight_modes)
-    #print(task_environment.true_data_dist)
-    #print(y_obs.shape)
-
-
-

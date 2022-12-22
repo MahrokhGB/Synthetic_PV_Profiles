@@ -1,15 +1,13 @@
 import numpy as np
-import pandas as pd
-import os, sys, pickle
+import os, sys
 
 PV_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(PV_DIR)
 sys.path.append(os.path.dirname(PV_DIR))
 
-from Synthetic_PV_Profiles import CityPV_UniModal
+from city_pv_uni_modal import CityPV_UniModal
 from utils_pv import tile_in_list
 
-#from assistive_functions.utils import*
 
 class CityPV_MultiModal(CityPV_UniModal):
 
@@ -121,12 +119,9 @@ if __name__ == "__main__":
     city.simulate_pv(
                 num_clients_per_mode=5, lags=None,
                 months=None, hours=None)
-    print(len(city.houses))
 
     city.construct_regression_matrices(
                 m_train=5, exclude_last_year=True,
                 train_years=[2018, 2019], remove_constant_cols=False)
     clients_data = city.clients_data_tuple
-    print(clients_data[0][0].shape, clients_data[0][1].shape, clients_data[0][2].shape, clients_data[0][3].shape)
-    print(city.feature_names)
     city._remove_constant_cols()
