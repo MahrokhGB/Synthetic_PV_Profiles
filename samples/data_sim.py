@@ -1,4 +1,4 @@
-from third_party.Synthetic_PV_Profiles import CityPV_MultiModal
+from city_pv_uni_modal import CityPV_MultiModal
 import numpy as np
 import pandas as pd
 from scipy.stats import truncnorm
