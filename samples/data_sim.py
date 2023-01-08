@@ -122,13 +122,13 @@ class PVDataset(MetaDataset):
         self.env_dict['clients_config']=self.task_environment.clients_config
 
 
-    def generate_clients_data(self):
+    def generate_clients_data(self, shuffle=True):
         self.env_dict['feature_names'] = None
         for scenario_name, scenario in self.env_dict['train_scenarios'].items():
             self.task_environment.construct_regression_matrices(
-                            m_train=scenario['m_train'], train_years=scenario['train_years'],
-                            exclude_last_year=scenario['exclude_last_year'],
-                            remove_constant_cols=self.env_dict['remove_constant_cols'])
+                m_train=scenario['m_train'], train_years=scenario['train_years'],
+                exclude_last_year=scenario['exclude_last_year'], shuffle=shuffle,
+                remove_constant_cols=self.env_dict['remove_constant_cols'])
             self.env_dict['train_scenarios'][scenario_name]['clients_data'] = copy.deepcopy(self.task_environment.clients_data_tuple)
             self.env_dict['train_scenarios'][scenario_name]['time_series'] = copy.deepcopy(self.task_environment.clients_time_series)
 

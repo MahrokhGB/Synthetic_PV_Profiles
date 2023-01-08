@@ -131,12 +131,12 @@ class CityPV_UniModal():
 
 
     def construct_regression_matrices(self, m_train, train_years=None, exclude_last_year=True,
-                                    remove_constant_cols=True):
+                                    remove_constant_cols=True, shuffle=True):
         # one tuple per client, each tuple is (x_train, y_train, x_valid, y_valid)
         self.clients_data_tuple = [None]*len(self.houses)
         for client_num, house in enumerate(self.houses):
-            self.clients_data_tuple[client_num] = house.construct_regression_matrices(m_train=m_train,
-                                                        train_years=train_years, exclude_last_year=exclude_last_year)
+            self.clients_data_tuple[client_num] = house.construct_regression_matrices(
+                m_train=m_train, shuffle=shuffle, train_years=train_years, exclude_last_year=exclude_last_year)
             # update train inds
             self.clients_time_series[client_num] = house.data_power
 

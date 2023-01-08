@@ -261,7 +261,7 @@ class HousePV():
 
 
 
-    def construct_regression_matrices(self, m_train=None, train_years=None, exclude_last_year=True):
+    def construct_regression_matrices(self, m_train=None, train_years=None, exclude_last_year=True, shuffle=True):
         '''
         convert the regression dataframe into matrices
         validation points were marked in the regression dataframe
@@ -287,7 +287,8 @@ class HousePV():
         # sample some of the potential points for training
         if m_train is None:
             inds_train = inds_maybe_train
-            self.random_state.shuffle(inds_train)
+            if shuffle:
+                self.random_state.shuffle(inds_train)
         else:
             inds_train = self.random_state.choice(inds_maybe_train, m_train, replace=False)
 
