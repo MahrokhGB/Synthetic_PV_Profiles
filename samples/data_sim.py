@@ -122,7 +122,7 @@ class PVDataset(MetaDataset):
         self.env_dict['clients_config']=self.task_environment.clients_config
 
 
-    def generate_clients_data(self, shuffle=True):
+    def generate_clients_data(self, shuffle=False):
         self.env_dict['feature_names'] = None
         for scenario_name, scenario in self.env_dict['train_scenarios'].items():
             self.task_environment.construct_regression_matrices(
@@ -190,58 +190,6 @@ def remove_feature(env_dict, feature_name, in_place=False):
         return env_dict
 
 
-
-
-
-
-'''
-    def _generate_data_2y(self, env_dict):
-        shuffle=False
-        clients_data_2y = [None]*env_dict['num_clients']
-        if env_dict['train_frac_2y'] is not None:
-            for client_num in np.arange(env_dict['num_clients']):
-                x_train, y_train, x_valid, y_valid = env_dict['clients_data_full'][client_num]
-                x_all = np.concatenate((x_train, x_valid), axis=0)
-                y_all = np.concatenate((y_train, y_valid), axis=0)
-                if shuffle:
-                    train_inds = self.random_state.choice(np.arange(x_all.shape[0]),
-                                                    size=int(x_all.shape[0]*env_dict['train_frac_2y']), replace=False)
-                else: # use the last portion for validation
-                    train_inds = np.arange(int(x_all.shape[0]*env_dict['train_frac_2y']))
-                valid_inds = list(set(np.arange(x_all.shape[0])) - set(train_inds))
-                # divide again and put back
-                clients_data_2y[client_num] = (x_all[train_inds, :], y_all[train_inds, :],
-                                            x_all[valid_inds, :], y_all[valid_inds, :])
-        env_dict['clients_data_2y']=clients_data_2y
-        return env_dict
-
-
-    def _generate_data_red(self, env_dict):
-        # --- data reduced ----
-        clients_data_red = [None] * env_dict['num_clients']
-        if env_dict['m_train_red'] is not None and env_dict['m_valid_red'] is not None:
-            for client_num in np.arange(env_dict['num_clients']):
-                data = env_dict['clients_data_full'][client_num]
-                # randomly select train_inds and valid_inds
-                train_inds = self.random_state.choice(np.arange(data[0].shape[0]),
-                                                size=env_dict['m_train_red'], replace=False)
-                valid_inds = self.random_state.choice(np.arange(data[3].shape[0]),
-                                                size=env_dict['m_valid_red'], replace=False)
-                # new train and validation data
-                clients_data_red[client_num] = (data[0][train_inds, :], data[1][train_inds],
-                                            data[2][valid_inds, :], data[3][valid_inds])
-                # mark samples used for train or validation
-                is_test_2018 = [True]*len(env_dict['clients_ts_2018'][client_num].index) # mark all as test
-                for i in train_inds:
-                    is_test_2018[i] = False            # train points are not test
-                is_test_2019 = [True]*len(env_dict['clients_ts_2019'][client_num].index) # mark all as test
-                for i in valid_inds:
-                    is_test_2019[i] = False            # valid points are not test
-                env_dict['clients_ts_2018'][client_num]['is_test'] = is_test_2018
-                env_dict['clients_ts_2019'][client_num]['is_test'] = is_test_2019
-        env_dict['clients_data_red']=clients_data_red
-        return env_dict
-'''
 # -----------------------------------------------------
 # ---------------------- ICU --------------------------
 # -----------------------------------------------------

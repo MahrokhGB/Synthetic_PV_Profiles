@@ -235,19 +235,27 @@ class HousePV():
         # --- augment lags ---
         self.data_power = _augment_lags(self.data_power, lags=lags, step_ahead=step_ahead)
 
-        # mark last week of each month as validation
-        num_days_valid = 7
+        # --- train and valid ---
         # mark all points as not used in train
         self.data_power['is_train'] = [False]*len(self.data_power['target']) # init to False
         # mark points used for validation
         self.data_power['is_valid'] = [False]*len(self.data_power['target']) # init to False
-        for month in self.months:
-            # No need to specify last year, b.c. peak last num_days_valid
-            inds_this_month = self.data_power.index[(self.data_power['month']==month) &
-                                             (self.data_power['hour_day'].isin(self.hours))].tolist()
+        # mark last year as valid
+        last_year = self.data_power.iloc[-1,:].loc['year']
+        inds_valid = self.data_power.index[
+            (self.data_power['year']==last_year) &
+            (self.data_power['month'].isin(self.months)) &
+            (self.data_power['hour_day'].isin(self.hours))].tolist()
+        self.data_power.loc[inds_valid, 'is_valid'] = True
 
-            inds_last_week = inds_this_month[-num_days_valid*len(self.hours):]
-            self.data_power.loc[inds_last_week, 'is_valid'] = True
+        # # mark last week of each month as validation
+        # num_days_valid = 7
+        # for month in self.months:
+        #     # No need to specify last year, b.c. peak last num_days_valid
+        #     inds_this_month = self.data_power.index[(self.data_power['month']==month) &
+        #                                      (self.data_power['hour_day'].isin(self.hours))].tolist()
+        #     inds_last_week = inds_this_month[-num_days_valid*len(self.hours):]
+        #     self.data_power.loc[inds_last_week, 'is_valid'] = True
 
 
         # feature_names
