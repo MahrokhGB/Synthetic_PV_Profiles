@@ -121,7 +121,7 @@ if __name__ == "__main__":
                 months=None, hours=None)
 
     city.construct_regression_matrices(
-                m_train=5, exclude_last_year=True,
+                m_train=5, valid_years=2020,
                 train_years=[2018, 2019], remove_constant_cols=False)
     clients_data = city.clients_data_tuple
     city._remove_constant_cols()

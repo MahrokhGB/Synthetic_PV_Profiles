@@ -240,10 +240,40 @@ class HousePV():
         self.data_power['is_train'] = [False]*len(self.data_power['target']) # init to False
         # mark points used for validation
         self.data_power['is_valid'] = [False]*len(self.data_power['target']) # init to False
-        # mark last year as valid
-        last_year = self.data_power.iloc[-1,:].loc['year']
+
+        # feature_names
+        cols_to_remove = ['target',     # target is not a feature
+                          'month',      # reflects in dayofy_x, dayofy_y
+                          'time',       # # reflects in hour_day_x, hour_day_y
+                          'hour_day',   # transformed to hour_day_x, hour_day_y
+                          'is_valid', 'is_train', 'year']
+        self.feature_names = [col for col in self.data_power.columns if not col in cols_to_remove]
+
+
+
+
+    def construct_regression_matrices(
+        self, m_train=None, train_years=None, valid_years=None,
+        shuffle=True):
+        '''
+        convert the regression dataframe into matrices
+        validation points were marked in the regression dataframe
+        - train_years: only select training samples from these years
+        - valid_years: select validation from these years. if None, takes the last year
+        - m_train: number of training samples. if None, all samples from train_years are taken
+                   as training samples
+        '''
+        # select years that can be used for training
+        if train_years is None:
+            train_years = self.data_power['year'].unique().tolist()
+        if valid_years is None:
+            valid_years = [self.data_power.iloc[-1,:].loc['year']]
+        if not isinstance(valid_years, list):
+            valid_years = [valid_years]
+
+        # mark validation points
         inds_valid = self.data_power.index[
-            (self.data_power['year']==last_year) &
+            (self.data_power['year'].isin(valid_years)) &
             (self.data_power['month'].isin(self.months)) &
             (self.data_power['hour_day'].isin(self.hours))].tolist()
         self.data_power.loc[inds_valid, 'is_valid'] = True
@@ -257,34 +287,6 @@ class HousePV():
         #     inds_last_week = inds_this_month[-num_days_valid*len(self.hours):]
         #     self.data_power.loc[inds_last_week, 'is_valid'] = True
 
-
-        # feature_names
-        cols_to_remove = ['target',     # target is not a feature
-                          'month',      # reflects in dayofy_x, dayofy_y
-                          'time',       # # reflects in hour_day_x, hour_day_y
-                          'hour_day',   # transformed to hour_day_x, hour_day_y
-                          'is_valid', 'is_train', 'year']
-        self.feature_names = [col for col in self.data_power.columns if not col in cols_to_remove]
-
-
-
-
-    def construct_regression_matrices(self, m_train=None, train_years=None, exclude_last_year=True, shuffle=True):
-        '''
-        convert the regression dataframe into matrices
-        validation points were marked in the regression dataframe
-        - train_years: only select training samples from these years
-        - exclude_last_year: if True, last year of data is not used in training
-        - m_train: number of training samples. if None, any sample that is not used
-                   for validation and is compatible with exclude_last_year is taken
-                   as a training sample
-        '''
-        # select years that can be used for training
-        if train_years is None:
-            train_years = self.data_power['year'].unique().tolist()
-        last_year = self.data_power.iloc[-1,:].loc['year']
-        if exclude_last_year and last_year in train_years:
-            train_years.remove(last_year)
         # mark points that can be used for training
         inds_maybe_train = self.data_power.index[
                                 (self.data_power['is_valid']==False) &
@@ -306,7 +308,6 @@ class HousePV():
         self.data_power.loc[inds_train,'is_train']=[True]*len(inds_train)
 
         # extraction
-        inds_valid = self.data_power.index[self.data_power['is_valid']==True].tolist()
         y_train = self.data_power.target.loc[inds_train].values
         y_valid = self.data_power.target.loc[inds_valid].values
 
@@ -450,7 +451,7 @@ if __name__ == "__main__":
                     months=[3,4], step_ahead=1)
     (X_train, y_train, X_valid, y_valid) = house.construct_regression_matrices(
                     m_train=None, train_years=[2018, 2019],
-                    exclude_last_year=True)
+                    valid_years=2020)
     print(X_train.shape, y_train.shape, X_valid.shape, y_valid.shape, house.feature_names)
     #print(house.shadows_vec)
 
