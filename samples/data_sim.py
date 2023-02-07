@@ -60,7 +60,7 @@ class PVDataset(MetaDataset):
                 # optional for generating datasets
                 'remove_constant_cols'
                 ]
-        #TODO: train_scenarios must have m_train, train_years, and optionally 'exclude_last_year'
+
         assert [x in env_options.keys() for x in req_fields]
         assert [x in req_fields + optional_fields for x in env_options.keys()]
         assert 'num_clients' in env_options.keys() or 'num_clients_per_mode' in env_options.keys()
@@ -127,7 +127,7 @@ class PVDataset(MetaDataset):
         for scenario_name, scenario in self.env_dict['train_scenarios'].items():
             self.task_environment.construct_regression_matrices(
                 m_train=scenario['m_train'], train_years=scenario['train_years'],
-                exclude_last_year=scenario['exclude_last_year'], shuffle=shuffle,
+                valid_years=scenario['valid_years'], shuffle=shuffle,
                 remove_constant_cols=self.env_dict['remove_constant_cols'])
             self.env_dict['train_scenarios'][scenario_name]['clients_data'] = copy.deepcopy(self.task_environment.clients_data_tuple)
             self.env_dict['train_scenarios'][scenario_name]['time_series'] = copy.deepcopy(self.task_environment.clients_time_series)

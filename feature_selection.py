@@ -178,7 +178,10 @@ def error_measures(model, X, y, verbose=False):
 import matplotlib.pyplot as plt
 import statsmodels.tsa.stattools as sttools
 from house_pv import _augment_lags
-def tune_pacf(house, max_num_lags, max_num_days, step_ahead=1, repeats=1, verbose=True):
+def tune_pacf(
+    house, max_num_lags, max_num_days,
+    train_years, valid_years,
+    step_ahead=1, repeats=1, verbose=True):
 
     '''
     INPUTS: data_power dataframe, maximum number of lags to be considered,
@@ -209,8 +212,7 @@ def tune_pacf(house, max_num_lags, max_num_days, step_ahead=1, repeats=1, verbos
         house.feature_names.append('lag ' + str(lag))
 
     (X_train, y_train, _, _) = house.construct_regression_matrices(
-                            m_train=None, train_years=None,
-                            exclude_last_year=True)
+        m_train=None, train_years=train_years, valid_years=valid_years)
     house.data_power = data_power_org
 
     # remove lags that are constant in training points
@@ -357,7 +359,8 @@ def scorer_adj_r2(estimator, X, y):
 
 
 def rfecv_selection(
-        house, max_num_days, keep_non_ar, step_ahead=1,
+        house, max_num_days, keep_non_ar,
+        train_years, valid_years, step_ahead=1,
         repeats=5, verbose=True, plot_fig=True):
     data_power_org = copy.deepcopy(house.data_power)
     # build regression df with all lags
@@ -365,8 +368,8 @@ def rfecv_selection(
                             house.data_power, lags=np.arange(1, max_num_days*24+1),
                             step_ahead=step_ahead)
     (X_train, y_train, _, _) = house.construct_regression_matrices(
-                            m_train=None, train_years=None,
-                            exclude_last_year=True)
+                            m_train=None, train_years=train_years,
+                            valid_years=valid_years)
     print(X_train.shape)
     house.data_power = data_power_org
 
@@ -439,7 +442,7 @@ if __name__ == "__main__":
                     months=[3,4], step_ahead=1)
     (X_train, y_train, X_valid, y_valid) = house.construct_regression_matrices(
                     m_train=None, train_years=[2018, 2019],
-                    exclude_last_year=True)
+                    valid_years=2020)
     #first_in_range, best_num_r, best_num_m, sorted_lags = tune_pacf(
     #                                house, max_num_lags=15, max_num_days=1,
     #                                step_ahead=1, repeats=3)
