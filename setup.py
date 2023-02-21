@@ -7,7 +7,7 @@ setup(
     long_description='Can be used to benchmark federated learning algorithms',
     url='https://github.com/MahrokhGB/Synthetic_PV_Profiles',
     keywords='PV, population models, simulated data',
-    python_requires='=3.9.9',
+    python_requires='==3.9.9',
     install_requires=[
         'matplotlib==3.5.3',
         'numpy==1.17.4',
