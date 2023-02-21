@@ -1,5 +1,5 @@
 import numpy as np
-import os, sys, pickle
+import os, sys
 
 PV_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(PV_DIR)
@@ -29,7 +29,7 @@ class CityPV_UniModal():
         - city_name: location of households. must be the same city. Bern, Dijon, Lausanne, or Milan
         - tilt_dev:  deviation in the tilt angle of PV cells for different households.
                      multiplied by 90 degrees to get the std of tilts' Gaussian distribution.
-                     set to 0 to have the same tilt for all households.
+                     set to 0 to have the same tilt for all h8ouseholds.
         - az_dev:    deviation in the azimuth angle of PV cells for different clients.
                      multiplied by 360 degrees to get the std of azimuths' Gaussian distribution.
                      set to 0 to have the same azimuth for all households.
