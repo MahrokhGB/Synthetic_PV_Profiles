@@ -1,6 +1,6 @@
 from setuptools import setup
 setup(
-    name='Synthetic_PV_Profiles'
+    name='Synthetic_ PV_Profiles',
     version='1.0',
     author='Mahrokh Ghoddousiboroujeni',
     description='Module for simulating synthetic PV power generation profiles based on PV installation setups and given weather and location information.',
