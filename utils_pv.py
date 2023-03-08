@@ -221,10 +221,10 @@ def visualize_pv_train_valid(env_dict, scenario_name, client_num, model, figsize
         # plot train data
 
         # plot validation data
-        
-        
-        
-        
+
+
+
+
 def normalize_data_tup(data):
     # for one client only
     data_nrm=(None, None, None, None)
@@ -335,14 +335,21 @@ def normalize_data_tup(data):
     return data_nrm, y_mean, y_std
 
 
-    
+
 
 def visualize_ts(client_ts, pred_mean=None, pred_std=None, title=None,
                  selected_months=None, hours = None, figsize=(16, 6)):
 
     '''
     visulaize predictions for one client
+
+    USAGE EXAMPLE
+    for client_num in np.arange(num_clients):
+        title = 'Predictions on training data for client {:2.0f}'.format(client_num)
+        _, predictions = clients_train_data[client_num] # assume an ideal model with zero error, in practice, this must be the output of your model on clients_train_data[client_num][0]
+        visualize_ts(clients_ts=clients_train_ts[client_num], pred_mean=predictions, selected_months=months, hours=hours, title = title)
     '''
+
     # check predictions provided for all clients
     #if (pred_mean is not None) or (pred_std is not None):
     #    assert (pred_mean is not None) and (pred_std is not None)
@@ -375,10 +382,13 @@ def visualize_ts(client_ts, pred_mean=None, pred_std=None, title=None,
             ax.fill_between(np.arange(len(lb)), lb, ub, label = 'confidence', color='red',
              alpha=0.5)
 
-    '''
-    USAGE EXAMPLE
-    for client_num in np.arange(num_clients):
-        title = 'Predictions on training data for client {:2.0f}'.format(client_num)
-        _, predictions = clients_train_data[client_num] # assume an ideal model with zero error, in practice, this must be the output of your model on clients_train_data[client_num][0]
-        visualize_ts(clients_ts=clients_train_ts[client_num], pred_mean=predictions, selected_months=months, hours=hours, title = title)
-    '''
+
+
+
+from sklearn.metrics import r2_score
+def adj_r2_scorer(estimator, X, y):
+    y = y.flatten()
+    y_pred = estimator.predict(X).flatten()
+    R2 = r2_score(y, y_pred)
+    n, p = X.shape
+    return 1-(1-R2)*(n-1)/(n-p-1)
